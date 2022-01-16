@@ -1,2 +1,4 @@
-# 2022-go-intro
-Introduksjonskurs GO 2022
+# GO introduksjonskurs
+
+Introduksjonskurs GO  2022
+av Leif Terje Fonnes
