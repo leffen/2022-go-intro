@@ -3,13 +3,9 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"os"
 	"strings"
-	"sync"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 type Measurement struct {
@@ -39,41 +35,16 @@ type Measurement struct {
 	UV             int64   // =0
 }
 
-func main() {
-
-	chMeasurement := make(chan *Measurement)
-
-	go func() {
-		err := LoadWeatherData("../data/alldata.json", chMeasurement)
-		if err != nil {
-			logrus.Fatal(err)
-		}
-	}()
-
-	rows := []*Measurement{}
-	rowNum := 0
-	for m := range chMeasurement {
-		rows = append(rows, m)
-		rowNum++
-		if rowNum%10000 == 0 {
-			fmt.Print("#")
-		}
-	}
-
-	fmt.Println("")
-	fmt.Printf("Number of rows: %d\n", len(rows))
-
-}
-
-func LoadWeatherData(fileName string, ch chan *Measurement) error {
+func LoadWeatherData(fileName string) ([]*Measurement, error) {
 	file, err := os.Open(fileName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	wg := sync.WaitGroup{}
+
+	rc := []*Measurement{}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -83,20 +54,14 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 		if line[0] == '#' {
 			continue
 		}
-		wg.Add(1)
-		go func(ln []byte) {
-			defer wg.Done()
-			m := &Measurement{}
-			err := json.Unmarshal(ln, m)
-			if err != nil {
-				// MERK
-				logrus.Error(err)
-			}
-			ch <- m
-		}([]byte(line))
-	}
-	wg.Wait()
-	close(ch)
 
-	return nil
+		m := &Measurement{}
+		err := json.Unmarshal([]byte(line), m)
+		if err != nil {
+			return nil, err
+		}
+		rc = append(rc, m)
+	}
+
+	return rc, nil
 }
