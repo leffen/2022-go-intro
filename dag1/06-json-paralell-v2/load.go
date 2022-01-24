@@ -61,7 +61,7 @@ func main() {
 	}
 
 	fmt.Println("")
-	fmt.Printf("Number of rows: %d\n", len(rows))
+	fmt.Printf("Number of Xrows: %d\n", len(rows))
 
 }
 
@@ -74,6 +74,14 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 
 	scanner := bufio.NewScanner(file)
 	wg := sync.WaitGroup{}
+	chData := make(chan string)
+
+	numChannels := 100
+
+	// Start x workers
+	for i := 0; i < numChannels; i++ {
+		go worker(chData, ch, &wg)
+	}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -84,19 +92,22 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 			continue
 		}
 		wg.Add(1)
-		go func(ln []byte) {
-			defer wg.Done()
-			m := &Measurement{}
-			err := json.Unmarshal(ln, m)
-			if err != nil {
-				// MERK
-				logrus.Error(err)
-			}
-			ch <- m
-		}([]byte(line))
+		chData <- line
 	}
 	wg.Wait()
 	close(ch)
 
 	return nil
+}
+
+func worker(chIn chan string, chOut chan *Measurement, wg *sync.WaitGroup) {
+	for data := range chIn {
+		m := &Measurement{}
+		err := json.Unmarshal([]byte(data), m)
+		if err != nil {
+			logrus.Error(err)
+		}
+		chOut <- m
+		wg.Done()
+	}
 }
