@@ -1,4 +1,4 @@
-module leffen/json-paralell
+module leffen/json-paralell-v2
 
 go 1.17
 
