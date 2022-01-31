@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -14,6 +13,23 @@ import (
 
 func TestPostEndpoint(t *testing.T) {
 
+	jsonData, err := ioutil.ReadFile("testdata/data.json")
+	require.Nil(t, err)
+	require.NotNil(t, jsonData)
+
+	request, err := http.NewRequest("POST", "/measurement", strings.NewReader(string(jsonData)))
+	require.Nil(t, err)
+	require.NotNil(t, request)
+
+	response := httptest.NewRecorder()
+
+	handlePost(response, request)
+
+	assert.Equal(t, 200, response.Code, "OK is expected when valid data is provided")
+}
+
+func TestPostNilToEndpoint(t *testing.T) {
+
 	request, err := http.NewRequest("POST", "/measurement", nil)
 	require.Nil(t, err)
 
@@ -21,20 +37,4 @@ func TestPostEndpoint(t *testing.T) {
 
 	handlePost(response, request)
 	assert.Equal(t, 400, response.Code, "Bad request expected when no data is provided")
-
-	jsonData, err := ioutil.ReadFile("testdata/data.json")
-	require.Nil(t, err)
-	require.NotNil(t, jsonData)
-
-	request, err = http.NewRequest("POST", "/measurement", strings.NewReader(string(jsonData)))
-	require.Nil(t, err)
-	require.NotNil(t, request)
-
-	response = httptest.NewRecorder()
-
-	handlePost(response, request)
-
-	fmt.Printf("Response %#v\n", response)
-	assert.Equal(t, 200, response.Code, "Bad request expected when no data is provided")
-
 }
