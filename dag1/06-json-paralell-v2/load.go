@@ -74,9 +74,9 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 
 	scanner := bufio.NewScanner(file)
 	wg := sync.WaitGroup{}
-	chData := make(chan string)
+	chData := make(chan string,500)
 
-	numChannels := 100
+	numChannels := 750
 
 	// Start x workers
 	for i := 0; i < numChannels; i++ {
@@ -92,6 +92,7 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 			continue
 		}
 		wg.Add(1)
+
 		chData <- line
 	}
 	wg.Wait()

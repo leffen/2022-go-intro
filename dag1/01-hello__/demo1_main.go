@@ -52,7 +52,7 @@ func NewFromJSON(data []byte) (*Test, error) {
 	return &rc, nil
 }
 
-func main() {
+func xmain() {
 	// obj := Test{Name: "Test"}
 	// obj.Name = "Test21"
 	// obj.Hello()

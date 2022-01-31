@@ -8,8 +8,8 @@ import (
 )
 
 func TestLoadFile(t *testing.T) {
-	data, err := LoadWeatherData("../data/alldata_small.json")
+	data, err := LoadWeatherData("test2.json")
 	require.Nil(t, err)
 	assert.NotNil(t, data)
-	assert.Equal(t, 10, len(data))
+	assert.Equal(t, 100, len(data))
 }

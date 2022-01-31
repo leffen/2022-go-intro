@@ -1,14 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
-	"fmt"
-	"os"
-	"strings"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 type Measurement struct {
@@ -38,49 +32,11 @@ type Measurement struct {
 	UV             int64   // =0
 }
 
-func main() {
-	start := time.Now()
-	rows, err := LoadWeatherData("../data/alldata.json")
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	fmt.Printf("Data Rows: %d %v\n", len(rows), time.Since(start))
-
-}
-
-func LoadWeatherData(fileName string) ([]*Measurement, error) {
-	file, err := os.Open(fileName)
+func NewMesurementFromJSON(data []byte) (*Measurement, error) {
+	m := &Measurement{}
+	err := json.Unmarshal(data, m)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	rc := []*Measurement{}
-
-	row := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		if len(strings.TrimSpace(line)) == 0 {
-			continue
-		}
-		if line[0] == '#' {
-			continue
-		}
-		m := &Measurement{}
-		err := json.Unmarshal([]byte(line), m)
-		if err != nil {
-			return nil, err
-		}
-		rc = append(rc, m)
-		row++
-		if row%10000 == 0 {
-			fmt.Print("#")
-		}
-	}
-	fmt.Println("")
-
-	return rc, nil
+	return m, nil
 }

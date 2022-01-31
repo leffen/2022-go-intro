@@ -73,6 +73,7 @@ func LoadWeatherData(fileName string, ch chan *Measurement) error {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+
 	wg := sync.WaitGroup{}
 
 	for scanner.Scan() {

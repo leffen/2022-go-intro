@@ -41,11 +41,11 @@ func loadMessage(fileName string) error {
 	}
 
 	msg := Message{}
-	err = json.Unmarshal(data, msg)
+	err = json.Unmarshal(data, &msg)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Data: %-v\n", msg)
+	fmt.Printf("Data: %+v\n", msg)
 	return nil
 }
