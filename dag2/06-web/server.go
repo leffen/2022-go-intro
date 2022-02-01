@@ -23,11 +23,7 @@ func NewMeasurementHttpServer() *MeasurementHttpServer {
 
 func (s *MeasurementHttpServer) HandleIndex(w http.ResponseWriter, req *http.Request) {
 
-	tpl, err := template.New("view").Funcs(template.FuncMap{
-		"html": func(value interface{}) template.HTML {
-			return template.HTML(fmt.Sprint(value))
-		},
-	}).ParseFiles("template/base.tpl")
+	tpl, err := template.ParseFiles("template/base.tpl")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

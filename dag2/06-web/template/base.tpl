@@ -20,6 +20,5 @@
 <body>
 <h1>Measurement<h1>
   {{ . }}
-
 </body>
 </html>
