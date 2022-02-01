@@ -14,7 +14,7 @@ spec:
         app: myservice
     spec:
       containers:
-        - image: leffen/myservice
+        - image: leffen/test3
           name: myservice
           imagePullPolicy: IfNotPresent
           ports:

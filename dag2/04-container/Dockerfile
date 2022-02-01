@@ -12,7 +12,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o myservice .
 
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN apk --no-cache add ca-certificates curl
 
