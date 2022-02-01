@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice
+  namespace: service01
+  labels:
+    app: myservice
+spec:
+  selector:
+    app: myservice
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8080
