@@ -22,7 +22,10 @@ func NewMeasurementHttpServer() *MeasurementHttpServer {
 }
 
 func (s *MeasurementHttpServer) HandleIndex(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprint(w, "<html><body><h1>Hello world</h1></body></html>")
+}
 
+func (s *MeasurementHttpServer) HandleIndex01(w http.ResponseWriter, req *http.Request) {
 	tpl, err := template.ParseFiles("template/base.tpl")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -40,8 +43,11 @@ func (s *MeasurementHttpServer) HandleIndex(w http.ResponseWriter, req *http.Req
 	}
 	list = append(list, "</ul>\n")
 
+	data := map[string]template.HTML{}
+	data["body"] = template.HTML(strings.Join(list, "\n"))
+
 	w.Header().Set("Content-Type", "text/html")
-	tpl.Execute(w, template.HTML(strings.Join(list, "\n")))
+	tpl.Execute(w, data)
 }
 
 func (s *MeasurementHttpServer) HandleRequest(w http.ResponseWriter, req *http.Request) {

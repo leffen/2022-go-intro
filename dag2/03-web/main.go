@@ -14,8 +14,12 @@ func main() {
 
 	mhs := NewMeasurementHttpServer()
 
+	fs := http.FileServer(http.Dir("./public"))
+	http.Handle("/public/", http.StripPrefix("/public", fs))
+
 	http.HandleFunc("/measurement", mhs.HandleRequest)
-	http.HandleFunc("/", mhs.HandleIndex)
+	http.HandleFunc("/hello", mhs.HandleIndex)
+	http.HandleFunc("/", mhs.HandleIndex01)
 
 	fmt.Printf("Startet server på port %s\n", srv.Addr)
 

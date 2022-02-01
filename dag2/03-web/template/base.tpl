@@ -19,6 +19,7 @@
 </head>
 <body>
 <h1>Measurement<h1>
-  {{ . }}
+  {{ .body }}
+	<img src="/public/gopher01.png">
 </body>
 </html>
